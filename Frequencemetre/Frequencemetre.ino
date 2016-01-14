@@ -1,5 +1,4 @@
 #include <LiquidCrystal.h>
-#include "avance_tab.h"
 #include "TimerOne.h"
 
 
@@ -8,6 +7,7 @@ int adc_key_in;
 volatile int state = LOW;
 static unsigned int _Tick;
 static unsigned int timerperiode;
+
 void _pulseSim(void)
 {
   state = state ^1;
@@ -17,8 +17,6 @@ void _pulseSim(void)
 
 void setup() 
 {
-  S_AVANCE * ptr;
-  
   pinMode(2,OUTPUT);
   pinMode(A0, INPUT);
   Serial.begin(115200);
@@ -28,18 +26,6 @@ void setup()
   analogReference(EXTERNAL);
   attachInterrupt(digitalPinToInterrupt(3), trigPIN3, RISING); 
   
-  ptr = AVANCE_TAB_GetTab();
-  for ( int i = 0 ; i < AVANCE_TAB_GetSize() ; i++ )
-  {
-    ptr[i].avance = (float)i;
-  }
-
-  Serial.println("**************************");
-  Serial.println("table d'avance :");
-    for ( int i = 0 ; i < AVANCE_TAB_GetSize() ; i++ )
-  {
-    Serial.println(ptr[i].avance);
-  }
   _Tick = millis();
 
   timerperiode = 2500;
@@ -93,14 +79,9 @@ void loop()
     _Tick = millis();
   
   lcd.print(freq);
-  lcd.print(" Hz ");
+  lcd.print(" Hz   ");
   
-  trmin = freq * 60.0;
-  trmin /= 2.0;   //-- pour 2 cylindres
-  lcd.setCursor(0,1);
-  lcd.print(trmin);
-  lcd.print(" tr/min  ");
-  lcd.setCursor(10,0);             // move to the begining of the second line
+  lcd.setCursor(0,1);             // move to the begining of the second line
 
   switch (read_LCD_buttons())
   {               // depending on which button was pushed, we perform an action
@@ -140,8 +121,6 @@ void loop()
     }
   }
   delay(100);
-  Serial.print(trmin);
-  Serial.println(" tr/min  ");
 }
 
 unsigned long us;
